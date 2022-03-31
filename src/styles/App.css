@@ -1,0 +1,34 @@
+* {
+    box-sizing: border-box;
+    color: #4c3c75;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+    padding-top: 100px;
+}
+
+ul {
+    padding-left: 0;
+}
+
+li {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.button {
+    padding-top: 4px;
+    display: inline-block;
+}
+
+.done, .done * {
+    color: #ccc;
+}
