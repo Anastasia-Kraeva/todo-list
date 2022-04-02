@@ -15,7 +15,7 @@ const TodoListItem = (props) => {
           {todo.value}
         </div>
         <div>
-          <Icon onClick={handleTodoEditStart} name="edit"/>
+          {!todo.done && <Icon onClick={handleTodoEditStart} name="edit"/>}
           <Icon onClick={deleteTodo} name="close"/>
         </div>
       </div>
