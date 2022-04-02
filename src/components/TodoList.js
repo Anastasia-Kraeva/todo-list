@@ -14,7 +14,7 @@ const TodoList = ({todos, setTodos, todosIds, setTodosIds}) => {
 
   const handleTodoAdd = (e) => {
     e.preventDefault()
-    const id = `${todos.length}`
+    const id = `${Date.now()}`
 
     setTodosIds([...todosIds, id])
     setTodos([...todos, {id: id, value: todo, done: false}])
