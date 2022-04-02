@@ -22,7 +22,10 @@ const TodoList = ({todos, setTodos, todosIds, setTodosIds}) => {
   }
 
   const deleteTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id))
+    const newTodos = todos.filter(todo => todo.id !== id)
+
+    setTodos(newTodos)
+    setTodosIds(newTodos.map(todo => todo.id))
   }
 
   const doneTodo = (id) => {
