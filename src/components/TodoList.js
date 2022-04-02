@@ -1,20 +1,12 @@
 import React from 'react';
+
+import DraggableItemWrapper from './DraggableItemWrapper';
+import TodoListItem from './TodoListItem';
 import Form from './Form';
 
-const Icon = ({onClick, name}) => {
-  return (
-    <div className="button"
-         onClick={onClick}
-         style={{cursor: 'pointer'}}>
-      <i className="material-icons">{name}</i>
-    </div>
-  )
-}
-
-const TodoList = () => {
-  const [todos, setTodos] = React.useState([]);
+const TodoList = ({todos, setTodos, todosIds, setTodosIds}) => {
   const [todo, setTodo] = React.useState('');
-  const [todoEdit, setTodoEdit] = React.useState(null);
+  const [todoEdit, setTodoEdit] = React.useState({});
 
   const handleChange = (e) => {
     setTodo(e.target.value)
@@ -22,19 +14,20 @@ const TodoList = () => {
 
   const handleTodoAdd = (e) => {
     e.preventDefault()
-    setTodos([...todos, {index: todos.length, value: todo, done: false}])
+    const id = `${todos.length}`
+
+    setTodosIds([...todosIds, id])
+    setTodos([...todos, {id: id, value: todo, done: false}])
     setTodo('')
   }
 
-  const deleteTodo = (e) => {
-    setTodos(todos.filter((todo, i) => i !== +/\d+/.exec(e.target.closest('li').id)))
+  const deleteTodo = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id))
   }
 
-  const doneTodo = (e) => {
-    const i = +/\d+/.exec(e.target.closest('li').id)
-
+  const doneTodo = (id) => {
     setTodos(todos.map(todo => {
-      return todo.index === i
+      return todo.id === id
         ? {...todo, done: !todo.done}
         : todo
     }))
@@ -48,14 +41,13 @@ const TodoList = () => {
     e.preventDefault()
     const todosCopy = [...todos]
 
-    todosCopy.splice(todoEdit.index, 1, {...todoEdit})
+    todosCopy.splice(todoEdit.id, 1, {...todoEdit})
     setTodos([...todosCopy])
     setTodoEdit({})
   }
 
-  const handleTodoEditStart = (e) => {
-    const todoIndex = +/\d+/.exec(e.target.closest('li').id)
-    setTodoEdit({...todos[todoIndex]})
+  const handleTodoEditStart = (id) => {
+    setTodoEdit({...todos.find(todo => todo.id === id)})
   }
 
   const handleCancel = () => setTodoEdit({})
@@ -68,31 +60,29 @@ const TodoList = () => {
             buttonText="Добавить"
       />
       <ul className="todoList">
-        {todos?.map((todo, i) => {
+        {todos?.map((todo, position) => {
           return (
-            <li key={`tdli-${i}`}
-                id={`tdli-${i}`}
-                className={todo.done ? 'done' : null}>
-              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                <div>
-                  <input type="checkbox"
-                         onChange={doneTodo}
-                         style={{cursor: 'pointer'}}/>
-                  {todo.value}
-                </div>
-                <div>
-                  <Icon onClick={handleTodoEditStart} name="edit"/>
-                  <Icon onClick={deleteTodo} name="close"/>
-                </div>
-              </div>
-
-              {todoEdit?.index === i &&
-              <Form value={todoEdit.value}
-                    handleChange={handleTodoChange}
-                    handleSubmit={handleTodoEdit}
-                    buttonText="Подтвердить"
-                    handleCancel={handleCancel}/>}
-            </li>
+            <DraggableItemWrapper key={todo.id}
+                                  draggableId={todo.id}
+                                  index={position}>
+              <TodoListItem todo={todo}
+                            handleTodoEditStart={() => {
+                          handleTodoEditStart(todo.id)
+                        }}
+                            doneTodo={() => {
+                          doneTodo(todo.id)
+                        }}
+                            deleteTodo={() => {
+                          deleteTodo(todo.id)
+                        }}>
+                {todoEdit?.id === todo.id &&
+                <Form value={todoEdit.value}
+                      handleChange={handleTodoChange}
+                      handleSubmit={handleTodoEdit}
+                      buttonText="Подтвердить"
+                      handleCancel={handleCancel}/>}
+              </TodoListItem>
+            </DraggableItemWrapper>
           )
         })}
       </ul>

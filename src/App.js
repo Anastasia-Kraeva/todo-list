@@ -1,11 +1,11 @@
 import React from 'react';
-import TodoList from './components/TodoList';
+import DnDTodoList from './components/DnDTodoList';
 import './styles/App.css';
 
 const App = () => {
   return (
     <>
-      <TodoList/>
+      <DnDTodoList/>
     </>
   )
 }
